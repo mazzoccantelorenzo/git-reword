@@ -1,0 +1,22 @@
+#!/bin/bash
+# Usage: git-reword <commit-hash> ["New message"]
+# Omit "New message" to open text editor.
+
+if [ "$#" -lt 1 ]; then
+    echo "Usage: git-reword <commit-hash> [\"New message\"]"
+    exit 1
+fi
+
+COMMIT=$1
+NEW_MSG=$2
+
+if [ -z "$NEW_MSG" ]; then
+    # Interactive mode: open text editor
+    GIT_SEQUENCE_EDITOR="sed -i.bak -e '1s/^pick/reword/'" \
+    git rebase -i "$COMMIT~1"
+else
+    # Inline mode: replace message immediately
+    GIT_SEQUENCE_EDITOR="sed -i.bak -e '1s/^pick/reword/'" \
+    GIT_EDITOR="sh -c 'echo \"$NEW_MSG\" > \$1' --" \
+    git rebase -i "$COMMIT~1"
+fi

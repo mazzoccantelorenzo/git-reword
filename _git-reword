@@ -1,0 +1,24 @@
+#compdef git-reword
+
+local prev=$words[CURRENT-1]
+
+if [[ "$prev" == "reword" || "$prev" == "git-reword" ]]; then
+    local -a commit_list
+    local hash msg line
+    
+    for line in ${(f)"$(git log -n 50 --oneline 2>/dev/null)"}; do
+        hash=${line%% *}
+        msg=${line#* }
+        msg=${msg//:/\\:}
+        msg=${msg//\'/\\\'}
+        msg=${msg//\"/\\\"}
+        commit_list+=("$hash:$msg")
+    done
+    
+    _describe -t commits 'recent commits' commit_list
+elif [[ "$prev" =~ ^[a-f0-9]+$ ]]; then
+    local msg="$(git log -1 --pretty=%s $prev 2>/dev/null)"
+    if [[ -n "$msg" ]]; then
+        compadd -Q -- "\"$msg\""
+    fi
+fi
