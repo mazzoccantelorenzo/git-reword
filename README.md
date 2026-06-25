@@ -1,3 +1,7 @@
+
+
+https://github.com/user-attachments/assets/9cc2c730-b521-40d5-83c5-4537eb3d55d0
+
 # Git Reword
 
 A fast, native bash script to rename or edit older git commit messages without manual interactive rebase. 
